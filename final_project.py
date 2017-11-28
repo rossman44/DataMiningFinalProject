@@ -10,14 +10,21 @@ start_time = time.time()
 # Gets the data from income_tr
 def getData():
     data = []
-    with open('TwoDimHard.csv', 'rb') as csvfile:
+    with open('Oahu_3_15_2016.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in csvreader:
             dataRow = []
             for item in row:
                 dataRow.append(item)
-            data.append(dataRow)
+            
+            if row[7] in (None, ""):
+                print(row[7])
+                row[7] = 2.812 #this is the average for that column
+            if (row[5] != 0):
+                data.append(dataRow)
+
         del data[0]
+    #print(data)
     return data
 
 
@@ -58,7 +65,7 @@ def determineCluster(dataSet, centroids):
 
 #Need Separate call for algorithm 2 
 def findEuclideanDistanceSet1(centroid, dataRow):
-    distance = (float(centroid[1]) - float(dataRow[1]))**2 + (float(centroid[2]) - float(dataRow[2]))**2 
+    distance = (float(centroid[6]) - float(dataRow[6]))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + (float(centroid[9]) - float(dataRow[9]))**2 + (float(centroid[10]) - float(dataRow[10]))**2 + (float(centroid[11]) - float(dataRow[11]))**2 + (float(centroid[12]) - float(dataRow[12]))**2
     distance = math.sqrt(distance) #this is the eucldean distance bewteen the data point and centroid
     return distance
 
@@ -89,26 +96,105 @@ def adjustCentroids(clusterArray, k, dataSet): #believe this works correctly now
         kCounter = kCounter + 1
     return updatedCentroids
 
+def getListofCategorical(cluster, index):
+    count = 0
+    catList = []
+    while (count < len(cluster)):
+        catList.append(cluster[count][index])
+        count = count + 1
+    return catList
+
 #need separate function
 def calculateAverageCentroid(cluster):
     count = 0
     newCentroid = []
     newCentroid.append(0) #this is so that the new centroid matches the same list size as the rows
-    #while (count < len(cluster)):
-    columnAverage1 = 0
+    newCentroid.append(0)
+
+    # column2item1 = 0
+    # column2item2 = 0
+    # column2item3 = 0
+
+    # column4item1 = 0
+    # column4item2 = 0
+    # column4item3 = 0
+    # column4item4 = 0
+    # column4item5 = 0
+    # column4item6 = 0
+    # column4item7 = 0
+    # column4item8 = 0
+    # column4item9 = 0
+
+    # while (count < len(cluster)):
+    #     print(len(cluster[count][2]))
+    #     if(len(cluster[count][2]) == 11):
+    #         column2item1 = column2item1 + 1
+    #     elif(len(cluster[count][2]) == 12):
+    #         column2item2 = column2item2 + 1
+    #     else:
+    #         column2item3 = column2item3 + 1
+    #     count = count + 1
+
+    #     columnMode4 = columnMode4 + cluster[count][4]
+
+
+    col2List = getListofCategorical(cluster, 2)
+    from collections import Counter
+    data = Counter(col2List)
+    newCentroid.append(data.most_common(1))
+    print(data.most_common(1)) # show what mode function returns
+
+    newCentroid.append(0)
+
+    col4List = getListofCategorical(cluster, 4)
+    from collections import Counter
+    data = Counter(col4List)
+    newCentroid.append(data.most_common(1))
+
+    newCentroid.append(0)
+    
+    columnAverage6 = 0
+    columnAverage7 = 0
+    columnAverage8 = 0
+    columnAverage9 = 0
+    columnAverage10 = 0
+    columnAverage11 = 0
+    columnAverage12 = 0
+
     for row in cluster:
-        columnAverage1 = columnAverage1 + float(row[1])
-    count = count + 1
-    columnAverage1 = float(columnAverage1) / float(len(cluster))
-    newCentroid.append(columnAverage1)
-     
-    columnAverage2 = 0
+        columnAverage6 = columnAverage6 + float(row[6])
+    columnAverage6 = float(columnAverage6) / float(len(cluster))
+    newCentroid.append(columnAverage6)
+
     for row in cluster:
-        columnAverage2 = columnAverage2 + float(row[2])
-    count = count + 1
-    columnAverage2 = float(columnAverage2) / float(len(cluster))
-    newCentroid.append(columnAverage2)
-    newCentroid.append(0) #so that averaged centroid matches row in dataset
+        columnAverage7 = columnAverage7 + float(row[7])
+    columnAverage7 = float(columnAverage7) / float(len(cluster))
+    newCentroid.append(columnAverage7)
+
+    for row in cluster:
+        columnAverage8 = columnAverage8 + float(row[8])
+    columnAverage8 = float(columnAverage8) / float(len(cluster))
+    newCentroid.append(columnAverage8)
+
+    for row in cluster:
+        columnAverage9 = columnAverage9 + float(row[9])
+    columnAverage9 = float(columnAverage9) / float(len(cluster))
+    newCentroid.append(columnAverage9)
+
+    for row in cluster:
+        columnAverage10 = columnAverage10 + float(row[10])
+    columnAverage10 = float(columnAverage10) / float(len(cluster))
+    newCentroid.append(columnAverage10)
+
+    for row in cluster:
+        columnAverage11 = columnAverage11 + float(row[11])
+    columnAverage11 = float(columnAverage11) / float(len(cluster))
+    newCentroid.append(columnAverage11)
+
+    for row in cluster:
+        columnAverage12 = columnAverage12 + float(row[12])
+    columnAverage12 = float(columnAverage12) / float(len(cluster))
+    newCentroid.append(columnAverage12)
 
     return newCentroid
 
@@ -132,23 +218,24 @@ def executeKMeans(k, dataSet):
         centroids = newCentroids
         clusterArray = determineCluster(dataSet, centroids)
         newCentroids = adjustCentroids(clusterArray, k, dataSet)
-    prepData(clusterArray)
+    prepData(clusterArray, dataSet)
 
 #Can use for both ---JK u suck kyle
-def prepData(clusterArray):
+def prepData(clusterArray, dataSet):
     arr = []
     count = 0
-    arr.append(["ID", "Cluster"])
+    #arr.append(["ID", "Cluster"])
     while (count < len(clusterArray)):
         row = []
-        row.append(count)
+        index = 0
+        while (index < len(clusterArray[count])):
+            row.append[count][index]
+            index = index + 1
         row.append(clusterArray[count])
         arr.append(row)
         count = count + 1
-    if (len(clusterArray) < 500):
-        printResults(arr, "Dim2HardOutput.csv")
-    else:
-        printResults(arr, "wineOutput.csv")
+
+    printResults(arr, "OahuOutput.csv")
 
 def normalizeOahu(wineData):
     count = 0
@@ -162,6 +249,7 @@ def normalizeOahu(wineData):
         normalizedSet.append(row[4])
         normalizedSet.append(row[5])
         normalizedSet.append(float(row[6]) / 5.0 )
+        print(row[7])
         normalizedSet.append(float(row[7]) / 5.0 )
         normalizedSet.append(float(row[8]) / 4.0)
         normalizedSet.append(float(row[9]) / 688.95 )
