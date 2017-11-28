@@ -7,25 +7,66 @@ import time
 import random
 start_time = time.time()
 
-# Gets the data from income_tr
+#Gets the data from income_tr
 def getData():
     data = []
     with open('Oahu_3_15_2016.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in csvreader:
             dataRow = []
+            count = 0
             for item in row:
-                dataRow.append(item)
-            
-            if row[7] in (None, ""):
-                print(row[7])
-                row[7] = 2.812 #this is the average for that column
-            if (row[5] != 0):
+                if (count == 7 and item in (None, "")):
+                    dataRow.append(2.812)
+                elif (count == 10 and item in (None, "")):
+                    dataRow.append(3.465)
+                elif (count == 8 and item in (None, "")):
+                    dataRow.append(1.387)
+                else:
+                    dataRow.append(item)
+                count = count + 1
+            if (dataRow[6] in (None, "")):
+                print("hit it")
+            else:
                 data.append(dataRow)
-
         del data[0]
-    #print(data)
     return data
+
+# Gets the data from income_tr
+# def getData():
+#     data = []
+#     with open('Oahu_3_15_2016.csv', 'rb') as csvfile:
+#         csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+#         csvCount = 0
+#         while (csvCount < len(csvreader)):
+#             dataRow = []
+#             rowCount = 0
+#             while (rowCount < len(csvreader[csvCount])):
+#                 if (csvreader[csvCount][5] != 0):
+#                     if csvreader[csvCount][7] in (None, ""):
+#                         dataRow.append(2.812)
+#                     else:
+#                         dataRow.append(csvreader[csvCount][rowCount])
+#                 rowCount = rowCount + 1
+#             data.append(dataRow)
+#             csvCount = csvCount + 1
+#         del data[0]
+
+
+        # for row in csvreader:
+        #     dataRow = []
+        #     for item in row:
+        #         dataRow.append(item)
+            
+        #     if row[7] in (None, ""):
+        #         print(row[7])
+        #         row[7] = 2.812 #this is the average for that column
+        #     if (row[5] != 0):
+        #         data.append(dataRow)
+
+        # del data[0]
+    #print(data)
+    # return data
 
 
 def printResults(results, name):
@@ -141,8 +182,8 @@ def calculateAverageCentroid(cluster):
     col2List = getListofCategorical(cluster, 2)
     from collections import Counter
     data = Counter(col2List)
-    newCentroid.append(data.most_common(1))
-    print(data.most_common(1)) # show what mode function returns
+    newCentroid.append(data.most_common(1)[0][0])
+    #print(data.most_common(1)[0][0]) # show what mode function returns
 
     newCentroid.append(0)
 
@@ -214,10 +255,13 @@ def executeKMeans(k, dataSet):
     centroids = getRandomCentroid(k, dataSet)
     clusterArray = determineCluster(dataSet, centroids) 
     newCentroids = adjustCentroids(clusterArray, k, dataSet) 
+    count = 0
     while (isCentroidsCorrect(centroids, newCentroids) == False):
         centroids = newCentroids
         clusterArray = determineCluster(dataSet, centroids)
         newCentroids = adjustCentroids(clusterArray, k, dataSet)
+        print(count)
+        count = count + 1
     prepData(clusterArray, dataSet)
 
 #Can use for both ---JK u suck kyle
@@ -228,8 +272,8 @@ def prepData(clusterArray, dataSet):
     while (count < len(clusterArray)):
         row = []
         index = 0
-        while (index < len(clusterArray[count])):
-            row.append[count][index]
+        while (index < len(dataSet[count])):
+            row.append(dataSet[count][index])
             index = index + 1
         row.append(clusterArray[count])
         arr.append(row)
@@ -248,15 +292,14 @@ def normalizeOahu(wineData):
         normalizedSet.append(row[3])
         normalizedSet.append(row[4])
         normalizedSet.append(row[5])
+        print(row[6])
         normalizedSet.append(float(row[6]) / 5.0 )
-        print(row[7])
         normalizedSet.append(float(row[7]) / 5.0 )
         normalizedSet.append(float(row[8]) / 4.0)
         normalizedSet.append(float(row[9]) / 688.95 )
         normalizedSet.append(float(row[10]) / 7.0 )
-        normalizedSet.append(float(row[11]) / 21.7 )
-        normalizedSet.append((float(row[12]) - 21.25633) / (21.703755 - 21.25633))
-        normalizedSet.append((float(row[13]) + 158.260712) / (158.260712 - 157.838787))
+        normalizedSet.append((float(row[11]) - 21.25633) / (21.703755 - 21.25633))
+        normalizedSet.append((float(row[12]) + 158.260712) / (158.260712 - 157.838787))
 
         totalNormalizedSet.append(normalizedSet)
     return totalNormalizedSet 
