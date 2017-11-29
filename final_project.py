@@ -7,7 +7,9 @@ import time
 import random
 start_time = time.time()
 
-#Gets the data from income_tr
+# Gets the data from income_tr
+
+
 def getData():
     data = []
     with open('Oahu_3_15_2016.csv', 'rb') as csvfile:
@@ -52,20 +54,19 @@ def getData():
 #             csvCount = csvCount + 1
 #         del data[0]
 
+    # for row in csvreader:
+    #     dataRow = []
+    #     for item in row:
+    #         dataRow.append(item)
 
-        # for row in csvreader:
-        #     dataRow = []
-        #     for item in row:
-        #         dataRow.append(item)
-            
-        #     if row[7] in (None, ""):
-        #         print(row[7])
-        #         row[7] = 2.812 #this is the average for that column
-        #     if (row[5] != 0):
-        #         data.append(dataRow)
+    #     if row[7] in (None, ""):
+    #         print(row[7])
+    #         row[7] = 2.812 #this is the average for that column
+    #     if (row[5] != 0):
+    #         data.append(dataRow)
 
-        # del data[0]
-    #print(data)
+    # del data[0]
+    # print(data)
     # return data
 
 
@@ -75,7 +76,9 @@ def printResults(results, name):
         writer = csv.writer(f)
         writer.writerows(results)
 
-#Can use for both
+# Can use for both
+
+
 def getRandomCentroid(k, dataSet):
     centroids = []
     count = 0
@@ -84,31 +87,39 @@ def getRandomCentroid(k, dataSet):
         count = count + 1
     return centroids
 
-#Need Separate call for Algorithm 2
+# Need Separate call for Algorithm 2
+
+
 def determineCluster(dataSet, centroids):
     clusterArray = []
-    for row in dataSet: #look at each row to find which cluster it belongs too
+    for row in dataSet:  # look at each row to find which cluster it belongs too
         count = 0
         closestCentroid = 0
-        shortestDistance = 10000 #initialized shortest distance high
-        while (count < len(centroids)): #compare each row in dataset to each centroid
-            #print((centroids[count])) #problem is centroids are empty
+        shortestDistance = 10000  # initialized shortest distance high
+        while (count < len(centroids)):  # compare each row in dataset to each centroid
+            # print((centroids[count])) #problem is centroids are empty
             lam = 0.3
             euc = findEuclideanDistanceSet1(centroids[count], row)
             modes = findKModes(centroids[count], row)
-            totalClusterDist = euc + modes * lam #lam is the lambda value for our K-Prototype equation to balance out weight of categorical attributes
+            # lam is the lambda value for our K-Prototype equation to balance out weight of categorical attributes
+            totalClusterDist = euc + modes * lam
             if (totalClusterDist < shortestDistance):
                 shortestDistance = totalClusterDist
-                closestCentroid = count + 1 #marks cluster as count + 1 so it starts at 1
+                closestCentroid = count + 1  # marks cluster as count + 1 so it starts at 1
             count = count + 1
         clusterArray.append(closestCentroid)
     return clusterArray
 
-#Need Separate call for algorithm 2 
+# Need Separate call for algorithm 2
+
+
 def findEuclideanDistanceSet1(centroid, dataRow):
-    distance = (float(centroid[6]) - float(dataRow[6]))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + (float(centroid[9]) - float(dataRow[9]))**2 + (float(centroid[10]) - float(dataRow[10]))**2 + (float(centroid[11]) - float(dataRow[11]))**2 + (float(centroid[12]) - float(dataRow[12]))**2
-    distance = math.sqrt(distance) #this is the eucldean distance bewteen the data point and centroid
+    distance = (float(centroid[6]) - float(dataRow[6]))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + (float(centroid[9]) -
+                                                                                                                                                          float(dataRow[9]))**2 + (float(centroid[10]) - float(dataRow[10]))**2 + (float(centroid[11]) - float(dataRow[11]))**2 + (float(centroid[12]) - float(dataRow[12]))**2
+    # this is the eucldean distance bewteen the data point and centroid
+    distance = math.sqrt(distance)
     return distance
+
 
 def findKModes(centroid, dataRow):
     total = 0
@@ -118,24 +129,27 @@ def findKModes(centroid, dataRow):
         total = total + 1
     return total
 
-#need separate call for algorithm 2 -- calls calculateAverageCentroid
-def adjustCentroids(clusterArray, k, dataSet): #believe this works correctly now
+# need separate call for algorithm 2 -- calls calculateAverageCentroid
+
+
+def adjustCentroids(clusterArray, k, dataSet):  # believe this works correctly now
     kCounter = 1
     updatedCentroids = []
-    #print(clusterArray)
+    # print(clusterArray)
     while (kCounter <= k):
         dataCount = 0
         cluster = []
-        while (dataCount < len(dataSet)): 
+        while (dataCount < len(dataSet)):
             if (kCounter == clusterArray[dataCount]):
                 cluster.append(dataSet[dataCount])
             dataCount = dataCount + 1
         if (len(cluster) > 1):
             newCentroid = calculateAverageCentroid(cluster)
-            #print(newCentroid)
+            # print(newCentroid)
             updatedCentroids.append(newCentroid)
         kCounter = kCounter + 1
     return updatedCentroids
+
 
 def getListofCategorical(cluster, index):
     count = 0
@@ -145,11 +159,14 @@ def getListofCategorical(cluster, index):
         count = count + 1
     return catList
 
-#need separate function
+# need separate function
+
+
 def calculateAverageCentroid(cluster):
     count = 0
     newCentroid = []
-    newCentroid.append(0) #this is so that the new centroid matches the same list size as the rows
+    # this is so that the new centroid matches the same list size as the rows
+    newCentroid.append(0)
     newCentroid.append(0)
 
     # column2item1 = 0
@@ -178,12 +195,11 @@ def calculateAverageCentroid(cluster):
 
     #     columnMode4 = columnMode4 + cluster[count][4]
 
-
     col2List = getListofCategorical(cluster, 2)
     from collections import Counter
     data = Counter(col2List)
     newCentroid.append(data.most_common(1)[0][0])
-    #print(data.most_common(1)[0][0]) # show what mode function returns
+    # print(data.most_common(1)[0][0]) # show what mode function returns
 
     newCentroid.append(0)
 
@@ -193,7 +209,7 @@ def calculateAverageCentroid(cluster):
     newCentroid.append(data.most_common(1))
 
     newCentroid.append(0)
-    
+
     columnAverage6 = 0
     columnAverage7 = 0
     columnAverage8 = 0
@@ -239,22 +255,26 @@ def calculateAverageCentroid(cluster):
 
     return newCentroid
 
-#Can use for both
+# Can use for both
+
+
 def isCentroidsCorrect(centroids, newCentroids):
     count = 0
     isSame = True
-    #print(centroids)
+    # print(centroids)
     while (count < len(centroids)):
         if (centroids[count] != newCentroids[count]):
             isSame = False
         count = count + 1
     return isSame
 
-#Needs separate for calls
+# Needs separate for calls
+
+
 def executeKMeans(k, dataSet):
     centroids = getRandomCentroid(k, dataSet)
-    clusterArray = determineCluster(dataSet, centroids) 
-    newCentroids = adjustCentroids(clusterArray, k, dataSet) 
+    clusterArray = determineCluster(dataSet, centroids)
+    newCentroids = adjustCentroids(clusterArray, k, dataSet)
     count = 0
     while (isCentroidsCorrect(centroids, newCentroids) == False):
         centroids = newCentroids
@@ -264,7 +284,9 @@ def executeKMeans(k, dataSet):
         count = count + 1
     prepData(clusterArray, dataSet)
 
-#Can use for both ---JK u suck kyle
+# Can use for both ---JK u suck kyle
+
+
 def prepData(clusterArray, dataSet):
     arr = []
     count = 0
@@ -281,6 +303,7 @@ def prepData(clusterArray, dataSet):
 
     printResults(arr, "OahuOutput.csv")
 
+
 def normalizeOahu(wineData):
     count = 0
     totalNormalizedSet = []
@@ -293,19 +316,47 @@ def normalizeOahu(wineData):
         normalizedSet.append(row[4])
         normalizedSet.append(row[5])
         print(row[6])
-        normalizedSet.append(float(row[6]) / 5.0 )
-        normalizedSet.append(float(row[7]) / 5.0 )
+        normalizedSet.append(float(row[6]) / 5.0)
+        normalizedSet.append(float(row[7]) / 5.0)
         normalizedSet.append(float(row[8]) / 4.0)
-        normalizedSet.append(float(row[9]) / 688.95 )
-        normalizedSet.append(float(row[10]) / 7.0 )
-        normalizedSet.append((float(row[11]) - 21.25633) / (21.703755 - 21.25633))
-        normalizedSet.append((float(row[12]) + 158.260712) / (158.260712 - 157.838787))
+        normalizedSet.append(float(row[9]) / 688.95)
+        normalizedSet.append(float(row[10]) / 7.0)
+        normalizedSet.append(
+            (float(row[11]) - 21.25633) / (21.703755 - 21.25633))
+        normalizedSet.append(
+            (float(row[12]) + 158.260712) / (158.260712 - 157.838787))
 
         totalNormalizedSet.append(normalizedSet)
-    return totalNormalizedSet 
+    return totalNormalizedSet
 
 
-#Need Separate call for Algorithm 2
+def normalizeNashville(originalData):
+    count = 0
+    totalNormalizedSet = []
+    for row in wineData:
+        normalizedSet = []
+        normalizedSet.append(row[0])
+        normalizedSet.append(row[1])
+        normalizedSet.append(row[2])
+        normalizedSet.append(row[3])
+        normalizedSet.append(row[4])
+        normalizedSet.append(row[5])
+        print(row[6])
+        normalizedSet.append(float(row[6]) / 5.0)
+        normalizedSet.append(float(row[7]) / 5.0)
+        normalizedSet.append(float(row[8]) / 4.0)
+        normalizedSet.append(float(row[9]) / 688.95)
+        normalizedSet.append(float(row[10]) / 7.0)
+        normalizedSet.append(
+            (float(row[11]) - 21.25633) / (21.703755 - 21.25633))
+        normalizedSet.append(
+            (float(row[12]) + 158.260712) / (158.260712 - 157.838787))
+
+        totalNormalizedSet.append(normalizedSet)
+    return totalNormalizedSet
+
+
+# Need Separate call for Algorithm 2
 # def determineClusterWine(dataSet, centroids):
 #     clusterArray = []
 #     for row in dataSet: #look at each row to find which cluster it belongs too
@@ -321,7 +372,7 @@ def normalizeOahu(wineData):
 #         clusterArray.append(closestCentroid)
 #     return clusterArray
 
-#Needs separate for calls
+# Needs separate for calls
 # def executeKMeansWine(k, dataSet):
 #     centroids = getRandomCentroid(k, dataSet)
 #     #print(centroids)
@@ -346,11 +397,11 @@ def normalizeOahu(wineData):
 #             columnAverage1 = columnAverage1 + float(row[count])
 #         count = count + 1
 #         columnAverage1 = float(columnAverage1) / float(len(cluster))
-#         newCentroid.append(columnAverage1) 
+#         newCentroid.append(columnAverage1)
 
 #     newCentroid.append(0) #so that averaged centroid matches row in dataset
 #     newCentroid.append("string")
-#     return newCentroid 
+#     return newCentroid
 
 # def adjustCentroidsWine(clusterArray, k, dataSet): #believe this works correctly now
 #     kCounter = 1
@@ -359,7 +410,7 @@ def normalizeOahu(wineData):
 #     while (kCounter <= k):
 #         dataCount = 0
 #         cluster = []
-#         while (dataCount < len(dataSet)): 
+#         while (dataCount < len(dataSet)):
 #             #print("Trying to find cluster match")
 #             #print(kCounter)
 #             #print(clusterArray[dataCount])
@@ -402,6 +453,6 @@ def main():
     executeKMeans(k, data)
     #executeKMeans(k, wineData)
 
+
 if __name__ == "__main__":
     main()
-
