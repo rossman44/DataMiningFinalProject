@@ -65,7 +65,7 @@ def getData():
         #         data.append(dataRow)
 
         # del data[0]
-    #print(data)
+    # print(data)
     # return data
 
 
@@ -75,7 +75,9 @@ def printResults(results, name):
         writer = csv.writer(f)
         writer.writerows(results)
 
-#Can use for both
+# Can use for both
+
+
 def getRandomCentroid(k, dataSet):
     centroids = []
     count = 0
@@ -85,6 +87,8 @@ def getRandomCentroid(k, dataSet):
     return centroids
 
 #Need Separate call for Algorithm 2
+
+
 def determineCluster(dataSet, centroids):
     clusterArray = []
     for row in dataSet: #look at each row to find which cluster it belongs too
@@ -93,7 +97,7 @@ def determineCluster(dataSet, centroids):
         shortestDistance = 10000 #initialized shortest distance high
         while (count < len(centroids)): #compare each row in dataset to each centroid
             #print((centroids[count])) #problem is centroids are empty
-            lam = 0.3
+            lam = 0.15
             euc = findEuclideanDistanceSet1(centroids[count], row)
             modes = findKModes(centroids[count], row)
             totalClusterDist = euc + modes * lam #lam is the lambda value for our K-Prototype equation to balance out weight of categorical attributes
@@ -106,7 +110,7 @@ def determineCluster(dataSet, centroids):
 
 #Need Separate call for algorithm 2 
 def findEuclideanDistanceSet1(centroid, dataRow):
-    distance = (3*(float(centroid[6]) - float(dataRow[6])))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + ((float(centroid[9]) - float(dataRow[9])))**2 + ((float(centroid[10]) - float(dataRow[10])))**2 + ((float(centroid[11]) - float(dataRow[11])))**2 + ((float(centroid[12]) - float(dataRow[12])))**2 #includes weights
+    distance = (3*(float(centroid[6]) - float(dataRow[6])))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + (1.5*(float(centroid[9]) - float(dataRow[9])))**2 + (0.5 * (float(centroid[10]) - float(dataRow[10])))**2 + (0.5 * (float(centroid[11]) - float(dataRow[11])))**2 + (0.5 * (float(centroid[12]) - float(dataRow[12])))**2 #includes weights
     distance = math.sqrt(distance) #this is the eucldean distance bewteen the data point and centroid
     return distance
 
