@@ -106,7 +106,7 @@ def determineCluster(dataSet, centroids):
 
 #Need Separate call for algorithm 2 
 def findEuclideanDistanceSet1(centroid, dataRow):
-    distance = (float(centroid[6]) - float(dataRow[6]))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + (float(centroid[9]) - float(dataRow[9]))**2 + (float(centroid[10]) - float(dataRow[10]))**2 + (float(centroid[11]) - float(dataRow[11]))**2 + (float(centroid[12]) - float(dataRow[12]))**2
+    distance = (3*(float(centroid[6]) - float(dataRow[6])))**2 + (float(centroid[7]) - float(dataRow[7]))**2 + (float(centroid[8]) - float(dataRow[8]))**2 + ((float(centroid[9]) - float(dataRow[9])))**2 + ((float(centroid[10]) - float(dataRow[10])))**2 + ((float(centroid[11]) - float(dataRow[11])))**2 + ((float(centroid[12]) - float(dataRow[12])))**2 #includes weights
     distance = math.sqrt(distance) #this is the eucldean distance bewteen the data point and centroid
     return distance
 
@@ -190,7 +190,7 @@ def calculateAverageCentroid(cluster):
     col4List = getListofCategorical(cluster, 4)
     from collections import Counter
     data = Counter(col4List)
-    newCentroid.append(data.most_common(1))
+    newCentroid.append(data.most_common(1)[0][0])
 
     newCentroid.append(0)
     
@@ -256,11 +256,12 @@ def executeKMeans(k, dataSet):
     clusterArray = determineCluster(dataSet, centroids) 
     newCentroids = adjustCentroids(clusterArray, k, dataSet) 
     count = 0
-    while (isCentroidsCorrect(centroids, newCentroids) == False):
+    while (isCentroidsCorrect(centroids, newCentroids) == False and count < 200):
         centroids = newCentroids
         clusterArray = determineCluster(dataSet, centroids)
         newCentroids = adjustCentroids(clusterArray, k, dataSet)
         print(count)
+        print(centroids[0])
         count = count + 1
     prepData(clusterArray, dataSet)
 
