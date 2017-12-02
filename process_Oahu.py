@@ -8,7 +8,7 @@ start_time = time.time()
 
 def getData():
     data = []
-    with open('nashville_0433_2016-05-22.csv', 'rb') as csvfile:
+    with open('Oahu_3_15_2016.csv', 'rb') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in csvreader:
             dataRow = []
@@ -43,15 +43,15 @@ def normalizeNashville(originalData):
         normalizedSet.append(row[4])
         normalizedSet.append(row[5])
         print(row[6])
-        normalizedSet.append(float(row[6]) - 4.0)
-        normalizedSet.append(float(row[7]) / 12.0)
+        normalizedSet.append((float(row[6]) - 4)) # For the overall satisfaction we choose to normalize by doing the current value minus the minimum / (largest distance) but largest distance is 1
+        normalizedSet.append(float(row[7]) / 5.0)
         normalizedSet.append(float(row[8]) / 4.0)
-        normalizedSet.append(float(row[9]) / 650.00)
-        normalizedSet.append(float(row[10]) / 3.0)
+        normalizedSet.append(float(row[9]) / 688.95)
+        normalizedSet.append(float(row[10]) / 7.0)
         normalizedSet.append(
-            (float(row[11]) - 35.999726) / (36.366593 - 35.999726))
+            (float(row[11]) - 21.25633) / (21.703755 - 21.25633))
         normalizedSet.append(
-            (float(row[12]) + 87.034983) / (-86.546457 + 87.034983))
+            (float(row[12]) + 158.260712) / (158.260712 - 157.838787))
 
         totalNormalizedSet.append(normalizedSet)
     return totalNormalizedSet
@@ -67,7 +67,7 @@ def printResults(results, name):
 def main():
     data = getData()
     data = normalizeNashville(data)
-    printResults(data, 'nash_output.csv')
+    printResults(data, 'Oahu_weka_output.csv')
     print 'attempted to print'
 
 
